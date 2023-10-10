@@ -31,25 +31,25 @@ musicaFocoInput.addEventListener("change", () => {
 });
 
 focoBt.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 1500;
+	tempoDecorridoEmSegundos = 1500;
 	alterarContexto("foco");
 	focoBt.classList.add("active");
 });
 
 curtoBt.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 300;
+	tempoDecorridoEmSegundos = 300;
 	alterarContexto("descanso-curto");
 	curtoBt.classList.add("active");
 });
 
 longoBt.addEventListener("click", () => {
-  tempoDecorridoEmSegundos = 900;
+	tempoDecorridoEmSegundos = 900;
 	alterarContexto("descanso-longo");
 	longoBt.classList.add("active");
 });
 
 function alterarContexto(contexto) {
-  mostrarTempo();
+	mostrarTempo();
 	botoes.forEach(function (contexto) {
 		contexto.classList.remove("active");
 	});
@@ -75,9 +75,22 @@ function alterarContexto(contexto) {
 
 const contagemRegressiva = () => {
 	if (tempoDecorridoEmSegundos <= 0) {
-		somAlarme.play();
-		alert("tempo finalizado!");
 		zerar();
+		const focoAtivo = html.getAttribute("data-contexto") === "foco";
+		if (focoAtivo) {
+			var event = new CustomEvent("TarefaFinalizada", {
+				detail: {
+					message: "A tarefa foi concluída com sucesso!",
+					time: new Date(),
+				},
+				bubbles: true,
+				cancelable: true,
+			});
+			document.dispatchEvent(event);
+			tempoDecorridoEmSegundos = 1500;
+			mostrarTempo();
+		}
+		somAlarme.play();
 		return;
 	}
 	tempoDecorridoEmSegundos -= 1;
